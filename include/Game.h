@@ -2,6 +2,8 @@
 #define GAME_H
 
 #include "Window.h"
+#include "ImGuiExample.h"
+#include <memory>
 
 static int FPS = 120;
 
@@ -11,6 +13,7 @@ public:
     Game();
     ~Game();
 
+    void init();
     void run();
     void update();
     void render();
@@ -23,6 +26,9 @@ public:
 private:
     bool mIsRunning;
     Window m_window;
+
+    // ImGui-Example
+    std::unique_ptr<ImGuiExample> m_imgui;
     // Add other game-specific members here
 };
 

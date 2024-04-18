@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game() : m_window("SDL Game", 800, 600), mIsRunning(false)
+Game::Game() : m_window("SDL Game", 800, 600), mIsRunning(false), m_imgui(std::unique_ptr<ImGuiExample>(new ImGuiExample()))
 {
     // Initialize game
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -15,11 +15,18 @@ Game::Game() : m_window("SDL Game", 800, 600), mIsRunning(false)
 Game::~Game()
 {
     // Clean up game
+    m_imgui->Shutdown(); // Shutdown ImGui-Example
     SDL_Quit();
 }
 
+void Game::init()
+{
+    // init ImGui-Example
+    m_imgui->Init(m_window.getWindow(), m_window.getRenderer());
+}
 void Game::run()
 {
+    init();
     // Main loop
     while (mIsRunning)
     {
@@ -52,6 +59,15 @@ void Game::handleEvents()
             break;
             // Add more event handling here if needed
         }
+        // Handle ImGui events
+        m_imgui->handleEvents(event);
+
+        // Update Background Color
+        int r = m_imgui->getRColor();
+        int g = m_imgui->getGColor();
+        int b = m_imgui->getBColor();
+
+        m_window.setBackgroundColor(r, g, b);
     }
 }
 
@@ -63,10 +79,12 @@ void Game::update()
 void Game::render()
 {
     // Clear the screen
-    SDL_SetRenderDrawColor(m_window.getRenderer(), 0, 0, 0, 255);
-    SDL_RenderClear(m_window.getRenderer());
+    m_window.clear();
 
     // Render game objects here
+
+    // Render ImGui-Example
+    m_imgui->render();
 
     // Update the screen
     SDL_RenderPresent(m_window.getRenderer());

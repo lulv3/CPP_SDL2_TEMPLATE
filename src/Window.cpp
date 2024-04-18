@@ -1,7 +1,7 @@
 #include "Window.h"
 
 Window::Window(const std::string &title, int width, int height)
-    : m_width(width), m_height(height)
+    : m_width(width), m_height(height), w_r(0), w_g(0), w_b(0)
 {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -41,10 +41,33 @@ SDL_Renderer *Window::getRenderer() const
 {
     return m_renderer;
 }
+SDL_Window *Window::getWindow() const
+{
+    return m_window;
+}
 
+int Window::getWidth() const
+{
+    int width, height;
+    SDL_GetWindowSize(m_window, &width, &height);
+    return width;
+}
+
+int Window::getHeight() const
+{
+    int width, height;
+    SDL_GetWindowSize(m_window, &width, &height);
+    return height;
+}
+void Window::setBackgroundColor(int r, int g, int b, int a)
+{
+    w_r = r;
+    w_g = g;
+    w_b = b;
+}
 void Window::clear() const
 {
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(m_renderer, w_r, w_g, w_b, 255);
     SDL_RenderClear(m_renderer);
 }
 
